@@ -10,8 +10,7 @@ export default function Line() {
   useEffect(() => {
     const handleCklik = async () => {
       try {
-        const result = await axios.get('http://localhost:3001/line'); // Замените '/api/data' на ваш URL эндпоинта на бэкенде
-  
+        const result = await axios.get('http://localhost:3001/line'); 
          setResponse(result.data);
          console.log(result.data)
       } catch (error) {

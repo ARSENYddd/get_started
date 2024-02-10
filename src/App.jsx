@@ -11,6 +11,7 @@ import RadialBar from './chart-types/RadialBar'
 import ChartUpdate from './ChartUpdate'
 
 import SelectComponent from './component1';
+import Model from './model1';
 
 
 export default function App() {
@@ -18,7 +19,8 @@ export default function App() {
 
     return (
     <Routes>
-      <Route path='/' element={ <SelectComponent />}/>                  
+      <Route path='/' element={ <SelectComponent />}/>  
+      <Route path='/model' element={ <Model />}/>                
     </Routes>
     //   <p>pppppppppppp</p>
     

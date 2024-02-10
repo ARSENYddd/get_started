@@ -28,7 +28,7 @@ async function getBitcoinPrice() {
   } catch (error) {
     console.error('Ошибка при получении цены биткойна:', error);
   }
-}
+}   
 
 
   function categories(data){
