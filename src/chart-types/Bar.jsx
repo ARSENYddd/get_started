@@ -1,39 +1,37 @@
-import React, { Component } from 'react';
-import Chart from 'react-apexcharts'
+import React, { useEffect, useRef } from 'react';
+import * as d3 from 'd3';
 
-class Bar extends Component {
+const LineChart = () => {
+  const svgRef = useRef();
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    const data = [10, 20, 30, 40, 50, 25, 35];
+    const svg = d3.select(svgRef.current);
 
-    this.state = {
-      options: {
-        dataLabels: {
-          enabled: false
-        },
-        plotOptions: {
-          bar: {
-            horizontal: true
-          }
-        },
-        xaxis: {
-          categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        }
-      },
-      series: [{
-        data: [30, 40, 25, 50, 49, 21, 70, 51]
-      }],
-    }
-  }
+    const xScale = d3.scaleLinear()
+      .domain([0, data.length - 1])
+      .range([0, 300]);
 
-  render() {
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(data)])
+      .range([150, 0]);
 
-    return (
-      <div className="bar">
-        <Chart options={this.state.options} series={this.state.series} type="bar" width="500" />
-      </div>
-    );
-  }
-}
+    const line = d3.line()
+      .x((d, i) => xScale(i))
+      .y(d => yScale(d))
+      .curve(d3.curveMonotoneX);
 
-export default Bar;
+    svg.selectAll('path')
+      .data([data])
+      .join('path')
+      .attr('d', line)
+      .attr('fill', 'none')
+      .attr('stroke', 'blue');
+  }, []);
+
+  return (
+    <svg ref={svgRef} width={400} height={200} />
+  );
+};
+
+export default LineChart;

@@ -28,7 +28,7 @@ async function getBitcoinPrice() {
   } catch (error) {
     console.error('Ошибка при получении цены биткойна:', error);
   }
-}   
+}
 
 
   function categories(data){
@@ -75,7 +75,7 @@ app.get('/line', async (req, res) => {
     }],
 }
   res.send(state);
-  console.log(state)
+  
 });
 
 app.listen(port, hostname, () => {

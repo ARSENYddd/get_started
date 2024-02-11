@@ -11,8 +11,12 @@ export default function Line() {
     const handleCklik = async () => {
       try {
         const result = await axios.get('http://localhost:3001/line'); 
-         setResponse(result.data);
-         console.log(result.data)
+        
+        if (result != null){
+          setResponse(result.data);
+        }
+        
+         
       } catch (error) {
         console.error(error);
       }
