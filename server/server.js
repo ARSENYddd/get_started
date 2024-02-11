@@ -20,8 +20,8 @@ async function getBitcoinPrice() {
       }
     });
     const bitcoinPrices = response.data.map(item => ({
-      time: new Date(item[0]),
-      price: item[4],
+      time: new Date(item[0]).getDate(),
+      price: Math.round(item[4]),
     })) // Последняя доступная цена биткойна за неделю
     //console.log('Цена биткойна за неделю:', bitcoinPrices);
     return bitcoinPrices;
@@ -47,6 +47,8 @@ async function getBitcoinPrice() {
     return price
   }
   
+  
+
   getBitcoinPrice()
 
 app.use((req, res, next) => {
@@ -76,6 +78,12 @@ app.get('/line', async (req, res) => {
 }
   res.send(state);
   
+});
+app.get('/area', async (req, res) => {
+  // Обработка запроса и отправка ответа
+  const data = await getBitcoinPrice();
+  console.log(data)
+  res.send(data);
 });
 
 app.listen(port, hostname, () => {
