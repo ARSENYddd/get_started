@@ -8,18 +8,28 @@ const containerStyle = {
  // backgroundColor: '#f0f0f0',
   padding: '20px'
 };
-
+function culcChange(oldv,newv){
+  let change = (Math.abs(((newv-oldv)/oldv)*100)).toFixed(2);
+  return change + '%'; 
+}
 const SimpleChart = () => {
   const [result,setResponse] = useState('');
+  const [lastItem,setLastItem] = useState('')
+  const [pretItem,setPreItem] = useState('')
   useEffect(() => {
     const handleCklik = async () => {
       try {
         const result = await axios.get('http://localhost:3001/area'); 
         console.log(result.data)
-          setResponse(result.data);    
+        //const lastItem = result.data.price.slice(-1)[0];
+        console.log(result.data[result.data.length - 1] );
+          setResponse(result.data);  
+          setLastItem(result.data[result.data.length - 1].price)  
+          setPreItem(result.data[result.data.length - 2].price) 
       } catch (error) {
         console.error(error);
       }
+      
     }
     handleCklik()
   }, [])
@@ -33,7 +43,13 @@ const SimpleChart = () => {
         x="time"
         y="price"/>
       </VictoryChart>
-    </div>
+
+      <div>
+      изменение цены за последний день 
+      {culcChange(pretItem,lastItem)}
+      
+      </div>
+      </div>
   );
 };
 
