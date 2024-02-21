@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+
 
 function Registration() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // В этой функции можно добавить логику отправки данных на сервер или их обработки
+    try {
+      const response = await axios.post('http://localhost:3001/register', {
+        username,
+        email,
+        password
+      });
+      console.log('Успех:', response.data);
+    } catch (error) {
+      console.error('Ошибка:', error);
+    }
     console.log('Username:', username);
     console.log('Email:', email);
     console.log('Password:', password);

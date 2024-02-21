@@ -14,8 +14,8 @@ export default function App() {
 
     return (
     <Routes>
-      <Route path='/' element={ <SelectComponent />}/> 
-      <Route path='/reg' element={<Registration />}/>             
+      <Route path='/register' element={ <SelectComponent />}/> 
+      <Route path='/' element={<Registration />}/>             
     </Routes>
     //   <p>pppppppppppp</p>
     
