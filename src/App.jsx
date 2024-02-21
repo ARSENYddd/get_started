@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import {Area} from './chart-types/Area'
 
-import SelectComponent from './component1';
+import SelectComponent from './component1'
+import Registration from './registr';
 
 
 
@@ -13,7 +14,8 @@ export default function App() {
 
     return (
     <Routes>
-      <Route path='/' element={ <SelectComponent />}/>              
+      <Route path='/' element={ <SelectComponent />}/> 
+      <Route path='/reg' element={<Registration />}/>             
     </Routes>
     //   <p>pppppppppppp</p>
     

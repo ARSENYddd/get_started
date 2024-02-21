@@ -31,21 +31,12 @@ function sendEmailNotification() {
 }
 
 // Проверка изменений в массиве
-function checkForChanges(previousArray, currentArray) {
-    const previousLastElement = _.last(previousArray);
-    const currentLastElement = _.last(currentArray);
-
+ function checkForChanges(previousLastElement, currentLastElement) {
+    console.log(currentLastElement - previousLastElement)
     // Проверка на значительное изменение (в данном случае, изменение на 10 или более)
-    if (Math.abs(currentLastElement - previousLastElement) >= 10) {
+    if (Math.abs(currentLastElement - previousLastElement) >= 1000) {
         sendEmailNotification();
     }
 }
+module.exports = checkForChanges;
 
-// Пример массива данных
-let previousData = [1, 2, 3, 4, 5];
-
-// Пример данных с изменением в последнем элементе
-let currentData = [1, 2, 3, 4, 15];
-
-// Проверка изменений
-checkForChanges(previousData, currentData);

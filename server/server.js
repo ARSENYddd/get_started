@@ -1,4 +1,5 @@
 
+const checkForChanges = require('./post')
 
 const hostname = '127.0.0.1';
 const port = 3001;
@@ -79,11 +80,17 @@ app.get('/line', async (req, res) => {
   res.send(state);
   
 });
+
+
+
+
 app.get('/area', async (req, res) => {
   // Обработка запроса и отправка ответа
   const data = await getBitcoinPrice();
   console.log(data)
   res.send(data);
+  checkForChanges(data[data.length - 2].price, data[data.length - 1].price)
+
 });
 
 app.listen(port, hostname, () => {
