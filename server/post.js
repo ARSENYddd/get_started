@@ -34,7 +34,7 @@ function sendEmailNotification() {
  function checkForChanges(previousLastElement, currentLastElement) {
     console.log(currentLastElement - previousLastElement)
     // Проверка на значительное изменение (в данном случае, изменение на 10 или более)
-    if (Math.abs(currentLastElement - previousLastElement) >= 1000) {
+    if (Math.abs(currentLastElement - previousLastElement) >= 100) {
         sendEmailNotification();
     }
 }

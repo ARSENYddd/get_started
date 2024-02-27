@@ -1,6 +1,6 @@
-
+const { Client } = require('pg');
 const checkForChanges = require('./post')
-
+const cron = require('node-cron');
 const hostname = '127.0.0.1';
 const port = 3001;
 const { Pool } = require('pg');
@@ -8,6 +8,19 @@ const cors = require('cors');
 const axios = require('axios');
 const express = require('express');
 const app = express();
+
+// const client = new Client({
+//   user: 'admin4',
+//   host: 'localhost',
+//   database: 'users',
+//   password: 'qqq',
+//   port: 5440,
+// });
+
+// client.connect()
+//   .then(() => console.log('Connected to the database'))
+//   .catch(err => console.error('Connection error', err))
+//   .finally(() => client.end());
 
 async function getBitcoinPrice() {
   try {
@@ -90,7 +103,7 @@ app.get('/area', async (req, res) => {
   const data = await getBitcoinPrice();
   console.log(data)
   res.send(data);
-  
+  checkForChanges(data[data.length - 2].price, data[data.length - 1].price);
 
 });
 
@@ -103,11 +116,11 @@ app.listen(port, hostname, () => {
 
 // Подключение к PostgreSQL
 const pool = new Pool({
-  user: 'your_username',
+  user: 'admin4',
   host: 'localhost',
-  database: 'your_database',
-  password: 'your_password',
-  port: 5432,
+  database: 'users',
+  password: 'qqq',
+  port: 5440,
 });
 
 // Middleware для парсинга JSON
@@ -121,7 +134,9 @@ app.post('/register', async (req, res) => {
     const values = [username, email, password];
     await pool.query(query, values);
     res.status(201).json({ message: 'Пользователь успешно создан' });
+    
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: err.message });
   }
 });
@@ -129,15 +144,23 @@ app.post('/register', async (req, res) => {
 
 
 
-function scheduleDailyTask(data) { 
-  const now = new Date();
-  const nextDay = new Date(now);
-  nextDay.setDate(now.getDate() + 1);
-  nextDay.setHours(0, 0, 0, 0); 
-  const timeUntilNextDay = nextDay - now;
-  setTimeout(() => {
-      checkForChanges(data[data.length - 2].price, data[data.length - 1].price)
-      scheduleDailyTask();
-  }, timeUntilNextDay);
-}
-scheduleDailyTask();
+// function scheduleDailyTask(data) { 
+//   const now = new Date();
+//   const nextDay = new Date(now);
+//   nextDay.setDate(now.getDate() + 1);
+//   nextDay.setHours(0, 0, 0, 0); 
+//   const timeUntilNextDay = nextDay - now;
+//   setTimeout(() => {
+//       checkForChanges(data[data.length - 2].price, data[data.length - 1].price)
+//       scheduleDailyTask();
+//   }, timeUntilNextDay);
+// }
+// scheduleDailyTask();
+
+
+cron.schedule('0 0 * * *', () => {
+  checkForChanges(data[data.length - 2].price, data[data.length - 1].price);
+}, {
+  scheduled: true,
+  timezone: "Europe/Moscow" // Укажите свой часовой пояс
+});
