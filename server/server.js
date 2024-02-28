@@ -1,7 +1,7 @@
 const { Client } = require('pg');
 const checkForChanges = require('./post')
 const cron = require('node-cron');
-const hostname = '127.0.0.1';
+const hostname = '0.0.0.0';
 const port = 3001;
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://185.177.219.47:3000',
   allowedHeaders: ['Content-Type']
 }));
 
@@ -146,10 +146,10 @@ async function fetchEmails() {
   } catch (error) {
     console.error('Error fetching emails:', error);
     return []; // Возвращаем пустой массив в случае ошибки
-  } finally {
-    // Всегда завершаем пул подключений
-    await pool.end();
-  }
+  } //finally {
+	   // Всегда завершаем пул подключений
+	  // await pool.end();
+  //}
   
 }
 

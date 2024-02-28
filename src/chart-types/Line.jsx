@@ -10,7 +10,7 @@ export default function Line() {
   useEffect(() => {
     const handleCklik = async () => {
       try {
-        const result = await axios.get('http://localhost:3001/line'); 
+        const result = await axios.get('http://185.177.219.47:3001/line'); 
         
         if (result != null){
           setResponse(result.data);

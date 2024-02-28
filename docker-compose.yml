@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./server
+    container_name: api_backend
+    ports:
+      - '3001:3001'
+    depends_on:
+      - db
+
+    # volumes:
+    #   - ./api:/app
+    #   - ./app/node_modules
+
+  client:
+    build: .
+    container_name: client_frontend
+    ports:
+      - '3000:3000'
+    #volumes:
+    #  - ./client:/app
+    #  - ./app/node_modules
+    stdin_open: true
+    tty: true
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin4
+      POSTGRES_PASSWORD: qqq
+      POSTGRES_DB: users
+    ports:
+      - "5440:5432"

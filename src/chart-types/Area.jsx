@@ -19,7 +19,7 @@ const SimpleChart = () => {
   useEffect(() => {
     const handleCklik = async () => {
       try {
-        const result = await axios.get('http://localhost:3001/area'); 
+        const result = await axios.get('http://185.177.219.47:3001/area'); 
         console.log(result.data)
         //const lastItem = result.data.price.slice(-1)[0];
         console.log(result.data[result.data.length - 1] );
