@@ -9,18 +9,7 @@ const axios = require('axios');
 const express = require('express');
 const app = express();
 
-// const client = new Client({
-//   user: 'admin4',
-//   host: 'localhost',
-//   database: 'users',
-//   password: 'qqq',
-//   port: 5440,
-// });
 
-// client.connect()
-//   .then(() => console.log('Connected to the database'))
-//   .catch(err => console.error('Connection error', err))
-//   .finally(() => client.end());
 
 async function getBitcoinPrice() {
   try {
@@ -101,9 +90,10 @@ app.get('/line', async (req, res) => {
 app.get('/area', async (req, res) => {
   // Обработка запроса и отправка ответа
   const data = await getBitcoinPrice();
+  const emails = await fetchEmails()
   console.log(data)
   res.send(data);
-  checkForChanges(data[data.length - 2].price, data[data.length - 1].price);
+  checkForChanges(data[data.length - 2].price, data[data.length - 1].price,emails);
 
 });
 
@@ -140,7 +130,28 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+async function fetchEmails() {
+  try {
+    // Выполняем SQL-запрос для выбора всех адресов электронной почты
+    const query = 'SELECT email FROM users';
+    const { rows } = await pool.query(query);
 
+    // Записываем адреса электронной почты в массив
+    const emails = rows.map(row => row.email);
+    console.error('эddddddd');
+    console.error(emails);
+    // Возвращаем массив адресов электронной почты
+    return emails;
+   
+  } catch (error) {
+    console.error('Error fetching emails:', error);
+    return []; // Возвращаем пустой массив в случае ошибки
+  } finally {
+    // Всегда завершаем пул подключений
+    await pool.end();
+  }
+  
+}
 
 
 
@@ -158,8 +169,9 @@ app.post('/register', async (req, res) => {
 // scheduleDailyTask();
 
 
-cron.schedule('0 0 * * *', () => {
-  checkForChanges(data[data.length - 2].price, data[data.length - 1].price);
+cron.schedule('0 0 * * *', async () => {
+ const emails = await fetchEmails()
+  checkForChanges(data[data.length - 2].price, data[data.length - 1].price, emails);
 }, {
   scheduled: true,
   timezone: "Europe/Moscow" // Укажите свой часовой пояс

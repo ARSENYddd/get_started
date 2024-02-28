@@ -13,10 +13,12 @@ const transporter = nodemailer.createTransport({
 });
 
 // Отправка уведомления на почту
-function sendEmailNotification() {
+function sendEmailNotification(recipients) {
+    console.log(recipients)
     const mailOptions = {
         from: 't.data@internet.ru',
-        to: 'arcen.dreyman@bk.ru',
+        to:  recipients.join(','),
+        //to: 'arcen.dreyman@bk.ru',
         subject: 'Notification: Last Element Changed Drastically',
         text: 'The last element in the array has changed significantly.'
     };
@@ -31,11 +33,12 @@ function sendEmailNotification() {
 }
 
 // Проверка изменений в массиве
- function checkForChanges(previousLastElement, currentLastElement) {
+ function checkForChanges(previousLastElement, currentLastElement,recipients) {
     console.log(currentLastElement - previousLastElement)
+    console.log(recipients)
     // Проверка на значительное изменение (в данном случае, изменение на 10 или более)
     if (Math.abs(currentLastElement - previousLastElement) >= 100) {
-        sendEmailNotification();
+        sendEmailNotification(recipients);
     }
 }
 module.exports = checkForChanges;
