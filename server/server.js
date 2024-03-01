@@ -146,10 +146,11 @@ async function fetchEmails() {
   } catch (error) {
     console.error('Error fetching emails:', error);
     return []; // Возвращаем пустой массив в случае ошибки
-  } finally {
-    // Всегда завершаем пул подключений
-    await pool.end();
-  }
+  } 
+  // finally {
+  //   // Всегда завершаем пул подключений
+  //   await pool.end();
+  // }
   
 }
 
