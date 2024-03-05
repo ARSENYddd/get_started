@@ -8,25 +8,34 @@ const cors = require('cors');
 const axios = require('axios');
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 
+let getDate ={
+  day: (date) => date.getDay,
+  hour: (date) => date.getHours,
+  min: (date) => date.getMinutes
+}
 
-
-async function getBitcoinPrice() {
+async function getBitcoinPrice(time,range,timestamp) {
   try {
     const response = await axios.get('https://api.binance.com/api/v3/klines', {
       params: {
         symbol: 'BTCUSDT',
-        interval: '1d',
-        startTime: Date.now() - 7 * 24 * 60 * 60 * 1000,
+        interval: time,
+        startTime: range,
         endTime: Date.now(),
-        limit: 7,
+        limit: 10,
       }
     });
+  
+  
     const bitcoinPrices = response.data.map(item => ({
-      time: new Date(item[0]).getDate(),
+      //time: new Date(item[0]),
+      time: getDate[timestamp](new Date(item[0])),
       price: Math.round(item[4]),
-    })) // Последняя доступная цена биткойна за неделю
-    //console.log('Цена биткойна за неделю:', bitcoinPrices);
+    })) 
+   
+    
     return bitcoinPrices;
   } catch (error) {
     console.error('Ошибка при получении цены биткойна:', error);
@@ -52,7 +61,7 @@ async function getBitcoinPrice() {
   
   
 
-  getBitcoinPrice()
+  //getBitcoinPrice()
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -63,37 +72,41 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
-app.get('/line', async (req, res) => {
-  // Обработка запроса и отправка ответа
-  const data = await getBitcoinPrice();
-  const state = {
-    options: {
-      stroke: {
-        curve: 'smooth'
-      },
-      markers: {
-        size: 0
-      },
-      xaxis: {
-        categories: categories(data)
-      }
-    },
-    series: [{
-      data: dataC(data)
-    }],
-}
-  res.send(state);
-  
-});
 
+app.use(bodyParser.json())
 
-app.get('/area', async (req, res) => {
+app.post('/area', async (req, res) => {
   // Обработка запроса и отправка ответа
-  const data = await getBitcoinPrice();
-  const emails = await fetchEmails()
-  console.log(data)
-  res.send(data);
-  checkForChanges(data[data.length - 2].price, data[data.length - 1].price,emails);
+  console.log(req.body,'dddddddd')
+  console.log((Date.now() - 7 * 24 * 60 * 60 * 1000),'dddddddd')
+  const selectedOption = req.body.changeChart;
+
+  let responseData = '';
+
+  if (selectedOption === 'day') {
+    
+    const data = await getBitcoinPrice('1d', (Date.now() - 7 * 24 * 60 * 60 * 1000),"day");
+    const emails = await fetchEmails()
+    //console.log(data)
+    res.send(data);
+    //checkForChanges(data[data.length - 2].price, data[data.length - 1].price,emails);
+
+  } else if (selectedOption === 'hour') {
+    const data = await getBitcoinPrice('1h',(Date.now() - 7 * 60 * 60 * 1000),"hour" );
+    const emails = await fetchEmails()
+    //console.log(data)
+    res.send(data);
+    //checkForChanges(data[data.length - 2].price, data[data.length - 1].price,emails);
+    
+  }else if (selectedOption === 'min') {
+
+    const data = await getBitcoinPrice('1m',(Date.now() -7 * 60 * 1000),"min");
+    const emails = await fetchEmails()
+    //console.log(data)
+    res.send(data);
+    //checkForChanges(data[data.length - 2].price, data[data.length - 1].price,emails);
+  }
+
 
 });
 

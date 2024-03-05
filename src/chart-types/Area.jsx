@@ -16,14 +16,34 @@ const SimpleChart = () => {
   const [result,setResponse] = useState('');
   const [lastItem,setLastItem] = useState('')
   const [pretItem,setPreItem] = useState('')
-  useEffect(() => {
-    const handleCklik = async () => {
+  const [changeChart, setchangeChart] = useState("day") 
+  const [receivedData, setReceivedData] = useState('');
+
+  
+
+
+
+    
+      const handleCklik = async (event) => {
+      const selectedValue = event.target.value;
+      setchangeChart(selectedValue);
+      console.log(selectedValue,'ddddddd')
       try {
-        const result = await axios.get('http://localhost:3001/area'); 
+        const result = await axios.post('http://localhost:3001/area', {
+          changeChart: selectedValue
+        }); 
+       
         console.log(result.data)
+        
+
+
+
+
         //const lastItem = result.data.price.slice(-1)[0];
-        console.log(result.data[result.data.length - 1] );
+          console.log(result.data[result.data.length - 1] );
+
           setResponse(result.data);  
+
           setLastItem(result.data[result.data.length - 1].price)  
           setPreItem(result.data[result.data.length - 2].price) 
       } catch (error) {
@@ -31,8 +51,8 @@ const SimpleChart = () => {
       }
       
     }
-    handleCklik()
-  }, [])
+    //handleCklik()
+  
 
   return (
     <div style={containerStyle}>
@@ -47,10 +67,21 @@ const SimpleChart = () => {
       <div>
       изменение цены за последний день 
       {culcChange(pretItem,lastItem)}
-      
+
+
+      <select  value={changeChart} onChange={handleCklik}>
+        <option value="day" >day</option>
+        <option value="hour" >hour</option>
+        <option value="min" >min</option>
+      </select>
+
+        {/* { changeChart === 'day' ? '1d' : null}
+        { changeChart === 'hour' ? '1h' : null}
+        { changeChart === 'min' ? '1m' : null} */}
       </div>
+      <div>{receivedData}</div>
       </div>
-  );
-};
+    );
+  }
 
 export default SimpleChart;

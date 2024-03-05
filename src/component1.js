@@ -6,7 +6,7 @@ import Line from './chart-types/Line'
 
 
 export default function SelectComponent() {
-    const [changeChart, setchangeChart] = useState("line") ;
+    const [changeChart, setchangeChart] = useState("area") ;
   
     useEffect(() => {
       // вызывается каждый раз, когда изменяется значение changeChart
