@@ -216,8 +216,9 @@ app.post('/login', async (req, res) => {
     client.release();
 
     if (result.rows.length > 0) {
-      res.status(200).json({ message: 'Successful login' });
-      res.json(mail)
+      //res.status(200).json({ message: 'Successful login' }) 
+       res.json(mail);
+      
       pool.end()
     } else {
       res.status(401).json({ message: 'Invalid username or password' });

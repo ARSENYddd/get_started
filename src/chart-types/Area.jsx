@@ -18,27 +18,53 @@ const SimpleChart = () => {
   const [pretItem,setPreItem] = useState('')
   const [changeChart, setchangeChart] = useState("day") 
   const [receivedData, setReceivedData] = useState('');
-
+  //const [mail, setMail] = useState('')
   
 
 
 
-    
+  async function fetchMailFromBackend() {
+    try {
+      // Получение данных с бэкенда
+      const response = await axios.get('http://localhost:3001/login');
+      return response.data; // Возвращаем данные
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error;
+    }
+  }
+
+  async function sendMailToServer(selectedValue,dataToSend) {
+    try {
+      // Отправка данных на сервер
+      const response = await axios.post('http://localhost:3001/area', {
+        changeChart: selectedValue,
+        getMail: dataToSend
+      });
+      return response
+      console.log('Response from backend:', response.data);
+    } catch (error) {
+      console.error('Error sending data:', error);
+      throw error;
+    }
+  }
+
+
       const handleCklik = async (event) => {
       const selectedValue = event.target.value;
       setchangeChart(selectedValue);
       console.log(selectedValue,'ddddddd')
       try {
-        const result = await axios.post('http://localhost:3001/area', {
-          changeChart: selectedValue
-        }); 
-       
-        console.log(result.data)
         
-
-
-
-
+        // const mail_s = await axios.get('http://localhost:3001/login')
+        // setMail(mail_s)
+        // const result = await axios.post('http://localhost:3001/area', {
+        //   changeChart: selectedValue
+        // }); 
+        const eml = await fetchMailFromBackend();
+        const result = await sendMailToServer(selectedValue,eml)
+        
+        console.log(result.data)
         //const lastItem = result.data.price.slice(-1)[0];
           console.log(result.data[result.data.length - 1] );
 
