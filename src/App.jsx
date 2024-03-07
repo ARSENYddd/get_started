@@ -6,6 +6,7 @@ import {Area} from './chart-types/Area'
 
 import SelectComponent from './component1'
 import Registration from './registr';
+import LoginPage from './autoris';
 
 
 
@@ -14,13 +15,12 @@ export default function App() {
 
     return (
     <Routes>
-      <Route path='/register' element={ <SelectComponent />}/> 
-      <Route path='/' element={<Registration />}/>             
+      <Route path='/' element={ <SelectComponent />}/> 
+      <Route path='/register' element={<Registration />}/>  
+      <Route path='/login' element={<LoginPage />}/>               
     </Routes>
     //   <p>pppppppppppp</p>
     
     );
   
 }
-
-
