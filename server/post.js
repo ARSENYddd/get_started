@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 // Отправка уведомления на почту
 function sendEmailNotification(recipients,res ) {
-    console.log(recipients)
+    console.log(recipients , 'да я тута получил в постах ебучих')
     const mailOptions = {
         from: 't.data@internet.ru',
         to:  recipients.join(','),
