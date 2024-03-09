@@ -1,6 +1,7 @@
 import { VictoryChart, VictoryLine, VictoryTheme } from 'victory';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Mail from 'nodemailer/lib/mailer';
 
 const containerStyle = {
   width: '90%',
@@ -27,6 +28,7 @@ const SimpleChart = () => {
     try {
       // Получение данных с бэкенда
       const response = await axios.get('http://localhost:3001/login');
+      console.log(response.data, 'emcer geted')
       return response.data; // Возвращаем данные
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -34,20 +36,18 @@ const SimpleChart = () => {
     }
   }
 
-  async function sendMailToServer(selectedValue,dataToSend) {
+  async function sendMailToServer(selectedValue) {
     try {
-      // Отправка данных на сервер
-      const response = await axios.post('http://localhost:3001/area', {
-        changeChart: selectedValue,
-        getMail: dataToSend
-      });
-      return response
-      console.log('Response from backend:', response.data);
+        // Отправка данных на сервер
+        const response = await axios.post('http://localhost:3001/area', {
+            changeChart: selectedValue
+            
+        });
+        return response; // Возвращаем полученные данные
     } catch (error) {
-      console.error('Error sending data:', error);
-      throw error;
+        throw error;
     }
-  }
+}
 
 
       const handleCklik = async (event) => {
@@ -56,13 +56,9 @@ const SimpleChart = () => {
       console.log(selectedValue,'ddddddd')
       try {
         
-        // const mail_s = await axios.get('http://localhost:3001/login')
-        // setMail(mail_s)
-        // const result = await axios.post('http://localhost:3001/area', {
-        //   changeChart: selectedValue
-        // }); 
-        const eml = await fetchMailFromBackend();
-        const result = await sendMailToServer(selectedValue,eml)
+        
+        //const eml = await fetchMailFromBackend().then(()=>sendMailToServer(selectedValue,eml))
+        const result = await sendMailToServer(selectedValue)
         
         console.log(result.data)
         //const lastItem = result.data.price.slice(-1)[0];
