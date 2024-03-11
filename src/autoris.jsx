@@ -6,6 +6,7 @@ function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -16,7 +17,10 @@ function LoginPage() {
       });
       
       // Здесь можно обработать ответ от сервера
-      console.log(response.data);
+      if (response.date != []){
+        setIsLoggedIn(true)
+      }
+      console.log(response.data,"ddwkdowdkwoidm");
       
       navigate('/');
       console.log('Successful login');

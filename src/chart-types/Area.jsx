@@ -12,7 +12,7 @@ function culcChange(oldv,newv){
   let change = (Math.abs(((newv-oldv)/oldv)*100)).toFixed(2);
   return change + '%'; 
 }
-const SimpleChart = () => {
+const SimpleChart = ({isLoggedIn}) => {
   const [result,setResponse] = useState('');
   const [lastItem,setLastItem] = useState('')
   const [pretItem,setPreItem] = useState('')
@@ -34,12 +34,12 @@ const SimpleChart = () => {
     }
   }
 
-  async function sendMailToServer(selectedValue,dataToSend) {
+  async function sendMailToServer(selectedValue) {
     try {
       // Отправка данных на сервер
       const response = await axios.post('http://localhost:3001/area', {
         changeChart: selectedValue,
-        getMail: dataToSend
+        //getMail: dataToSend
       });
       return response
       console.log('Response from backend:', response.data);
@@ -61,8 +61,8 @@ const SimpleChart = () => {
         // const result = await axios.post('http://localhost:3001/area', {
         //   changeChart: selectedValue
         // }); 
-        const eml = await fetchMailFromBackend();
-        const result = await sendMailToServer(selectedValue,eml)
+        //const eml = await fetchMailFromBackend();
+        const result = await sendMailToServer(selectedValue)
         
         console.log(result.data)
         //const lastItem = result.data.price.slice(-1)[0];
@@ -105,6 +105,13 @@ const SimpleChart = () => {
         { changeChart === 'hour' ? '1h' : null}
         { changeChart === 'min' ? '1m' : null} */}
       </div>
+      <div>
+      {isLoggedIn ? (
+        <p>Вы вошли в систему!</p>
+      ) : (
+        <p>Вы не вошли в систему.</p>
+      )}
+    </div>
       <div>{receivedData}</div>
       </div>
     );
