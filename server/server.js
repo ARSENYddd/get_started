@@ -10,7 +10,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const { createPool } = require('generic-pool');
-const executeBasedOnTime = require('./time')
+const scheduleTask = require('./time')
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 //const User = require('./user')
@@ -196,6 +196,7 @@ const selectedOption = req.body.changeChart;
 
 });
 
+
 app.listen(port, hostname, () => {
   console.log('Сервер запущен на порту 3001');
 });
@@ -279,14 +280,14 @@ async function fetchEmails() {
     
     // Записываем адреса электронной почты в массив
     const emails = rows.map(row => row.email);
-    console.error('бляяяяяяя');
+    console.error('=');
     console.error(emails);
     // Возвращаем массив адресов электронной почты
     pool.end()
     return emails;
    
   } catch (error) {
-    console.error('пизда с почтой крч:', error);
+    console.error('----------', error);
     pool.end()
     return []; // Возвращаем пустой массив в случае ошибки
     
@@ -294,4 +295,7 @@ async function fetchEmails() {
   
 }
 
-//executeBasedOnTime()
+scheduleTask()
+
+
+module.exports = getBitcoinPrice

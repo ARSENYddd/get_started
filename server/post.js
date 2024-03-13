@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 
 // Отправка уведомления на почту
 function sendEmailNotification(recipients,res ) {
-    console.log(recipients , 'да я тута получил в постах ебучих')
+    console.log(recipients , 'да я тута получил в постах ')
     const mailOptions = {
         from: 't.data@internet.ru',
         to:  recipients.join(','),
@@ -37,8 +37,8 @@ function sendEmailNotification(recipients,res ) {
     console.log(currentLastElement - previousLastElement)
     console.log(recipients)
     // Проверка на значительное изменение (в данном случае, изменение на 10 или более)
-    if (Math.abs(currentLastElement - previousLastElement) >= 100) {
+    //if (Math.abs(currentLastElement - previousLastElement) >= 1) {
         sendEmailNotification(recipients,currentLastElement - previousLastElement);
-    }
+   // }
 }
 module.exports = checkForChanges;
