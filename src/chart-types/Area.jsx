@@ -40,6 +40,9 @@ const SimpleChart = ({isLoggedIn}) => {
       const response = await axios.post('http://localhost:3001/area', {
         changeChart: selectedValue,
         //getMail: dataToSend
+      },
+      {
+        withCredentials: true,
       });
       return response
       console.log('Response from backend:', response.data);

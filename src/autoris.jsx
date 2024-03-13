@@ -11,12 +11,16 @@ function LoginPage() {
 
   const handleLogin = async () => {
     try {
+      console.log(username,password)
+      console.log(username)
       const response = await axios.post('http://localhost:3001/login', {
         username,
         password,
+      },{
+        withCredentials: true,
       });
       
-      // Здесь можно обработать ответ от сервера
+      //Здесь можно обработать ответ от сервера
       if (response.date != []){
         setIsLoggedIn(true)
       }

@@ -13,7 +13,32 @@ const { createPool } = require('generic-pool');
 const executeBasedOnTime = require('./time')
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('./user')
+//const User = require('./user')
+const session = require('express-session');
+const bcrypt = require('bcryptjs');
+const { Sequelize, DataTypes } = require('sequelize');
+const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Укажите домен вашего клиента')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Разрешаем использование учетных данных
+  next();
+});
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secret_key'], // Массив ключей для подписи куки
+  maxAge: 24 * 60 * 60 * 1000, // Время жизни сессии (24 часа)
+  secure: true, // Устанавливаем secure: true, чтобы куки использовались только по HTTPS
+  httpOnly: true,
+}));
+
+
 
 let getDate ={
   day: (date) => date.getDay,
@@ -70,7 +95,8 @@ app.use((req, res, next) => {
 });
 app.use(cors({
   origin: 'http://localhost:3000',
-  allowedHeaders: ['Content-Type']
+  allowedHeaders: ['Content-Type','Cookie'],
+  credentials: true
 }));
 
 
@@ -80,9 +106,14 @@ app.use(bodyParser.json())
 
 app.post('/area', async (req, res) => {
   // Обработка запроса и отправка ответа
- 
-  const selectedOption = req.body.changeChart;
+const selectedOption = req.body.changeChart;
+ // Получаем значение куки с именем "userId"
+ const userId = req.cookies.userId;
 
+ // Печатаем значение userId в консоль
+ console.log(userId);
+
+  
   const sql = `UPDATE users
              SET type_w = $1
              WHERE id = $2`;
@@ -96,7 +127,7 @@ app.post('/area', async (req, res) => {
     //console.log(data)
     res.send(data);
     const type_w = 'day';
-    const userId = 1;
+    //const userId = 1;
     pool.acquire().then((client) => {
       client.query(sql, [type_w, userId], (err, result) => {
         if (err) {
@@ -119,7 +150,7 @@ app.post('/area', async (req, res) => {
     //console.log(data)
     res.send(data);
     const type_w = 'hour';
-    const userId = 1;
+    //const userId = 1;
     pool.acquire().then((client) => {
       client.query(sql, [type_w, userId], (err, result) => {
         if (err) {
@@ -144,7 +175,7 @@ app.post('/area', async (req, res) => {
     //console.log(data)
     res.send(data);
     const type_w = 'min';
-    const userId = 1;
+    //const userId = 1;
     pool.acquire().then((client) => {
       client.query(sql, [type_w, userId], (err, result) => {
         if (err) {
@@ -186,7 +217,7 @@ const pool = createPool({
 });
 
 
-// Middleware для парсинга JSON
+
 app.use(express.json());
 
 // Обработка POST запроса на создание пользователя
@@ -206,38 +237,27 @@ app.post('/register', async (req, res) => {
     pool.end()
   }
 });
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findOne({ username: username }, function(err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      return done(null, user);
-    });
-  }
-));
 
-app.post('/login',passport.authenticate('local', {successRedirect: '/',
-                                                  failureRedirect: '/login',
-                                                  failureFlash: true }), async (req, res) => {
+
+app.post('/login', async (req, res) => {
+  console.log('подключилось')
+  // console.log(req.body)
+  // console.log(req)
   const { username, password } = req.body;
   const pool = new Pool(poolConfig);
   
   try {
     const client = await pool.connect();
-    const result = await client.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
-    const mail = await client.query('SELECT email FROM users WHERE username = $1', [username]);
+    const user = await client.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
+    //const mail = await client.query('SELECT email FROM users WHERE username = $1', [username]);
     client.release();
 
-    if (result.rows.length > 0) {
-      //res.status(200).json({ message: 'Successful login' }) 
-       res.json(mail);
-      
-      pool.end()
+    if (user.rows.length > 0) {
+      const userId = user.rows[0].id;
+      // Устанавливаем куки с идентификатором пользователя
+      res.cookie('userId', userId);
+      res.status(200).json({ message: 'Successful login' });
+      pool.end();
     } else {
       res.status(401).json({ message: 'Invalid username or password' });
       pool.end()
